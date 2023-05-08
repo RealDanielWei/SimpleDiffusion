@@ -13,6 +13,7 @@ class StableDiffusionConfig:
     cache_dir  = "./.cache"   #path for caching
     num_inference_steps = 25  # Number of denoising steps
     guidance_scale = 7.5  # Scale for classifier-free guidance
+    seed = 0
 
 class StableDiffusionSystem:
     def __init__(self, config : StableDiffusionConfig):
@@ -23,7 +24,7 @@ class StableDiffusionSystem:
         self.vae = AutoencoderKL.from_pretrained(self.config.model_name, subfolder="vae", cache_dir = self.config.cache_dir).to(self.device)
         self.unet = UNet2DConditionModel.from_pretrained(self.config.model_name, subfolder="unet", cache_dir = self.config.cache_dir).to(self.device)
         self.scheduler = PNDMScheduler.from_pretrained(self.config.model_name, subfolder="scheduler")
-        self.generator = torch.manual_seed(0)
+        self.generator = torch.manual_seed(self.config.seed)
 
     def textToImage(self, prompt):
         batch_size = len(prompt)
